@@ -1,0 +1,107 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Ajax Handler.
+ *
+ * WordPress AJAX handler for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * AJAX action name.
+     *
+     * @var string
+     */
+    protected string $action = '{{prefix}}{{snake}}';
+
+    /**
+     * Whether to allow non-logged-in users.
+     *
+     * @var bool
+     */
+    protected bool $public = false;
+
+    /**
+     * Handle the AJAX request.
+     *
+     * @return void
+     */
+    public function handle(): void
+    {
+        // Verify nonce
+        if (!check_ajax_referer($this->action, 'nonce', false)) {
+            wp_send_json_error([
+                'message' => __('Security check failed.', '{{textDomain}}'),
+            ], 403);
+        }
+
+        // Check permissions
+        if (!$this->authorize()) {
+            wp_send_json_error([
+                'message' => __('Unauthorized.', '{{textDomain}}'),
+            ], 403);
+        }
+
+        // Process the request
+        $result = $this->process();
+
+        wp_send_json_success($result);
+    }
+
+    /**
+     * Check if the current user is authorized.
+     *
+     * @return bool
+     */
+    protected function authorize(): bool
+    {
+        return current_user_can('manage_options');
+    }
+
+    /**
+     * Process the AJAX request.
+     *
+     * @return array<string, mixed>
+     */
+    protected function process(): array
+    {
+        // Implement your AJAX logic here
+        return [
+            'message' => __('Success.', '{{textDomain}}'),
+        ];
+    }
+
+    /**
+     * Get the nonce for frontend usage.
+     *
+     * @return string
+     */
+    public function getNonce(): string
+    {
+        return wp_create_nonce($this->action);
+    }
+
+    /**
+     * Boot the AJAX handler (register with WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+
+        // Logged-in users
+        add_action('wp_ajax_' . $instance->action, [$instance, 'handle']);
+
+        // Non-logged-in users (if public)
+        if ($instance->public) {
+            add_action('wp_ajax_nopriv_' . $instance->action, [$instance, 'handle']);
+        }
+    }
+}

@@ -1,0 +1,199 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Metabox.
+ *
+ * Custom metabox for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Metabox ID.
+     *
+     * @var string
+     */
+    protected string $id = '{{id}}';
+
+    /**
+     * Metabox title.
+     *
+     * @var string
+     */
+    protected string $title = '{{metaboxTitle}}';
+
+    /**
+     * Screens to display on.
+     *
+     * @var string|string[]|null
+     */
+    protected string|array|null $screen = {{screen}};
+
+    /**
+     * Context position.
+     *
+     * @var string
+     */
+    protected string $context = '{{context}}';
+
+    /**
+     * Priority.
+     *
+     * @var string
+     */
+    protected string $priority = '{{priority}}';
+
+    /**
+     * Nonce action.
+     *
+     * @var string
+     */
+    protected string $nonceAction = '{{prefix}}{{snake}}_nonce_action';
+
+    /**
+     * Nonce name.
+     *
+     * @var string
+     */
+    protected string $nonceName = '{{prefix}}{{snake}}_nonce';
+
+    /**
+     * Register the metabox.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        add_meta_box(
+            $this->id,
+            $this->title,
+            [$this, 'render'],
+            $this->screen,
+            $this->context,
+            $this->priority
+        );
+    }
+
+    /**
+     * Render the metabox.
+     *
+     * @param \WP_Post $post
+     *
+     * @return void
+     */
+    public function render(\WP_Post $post): void
+    {
+        wp_nonce_field($this->nonceAction, $this->nonceName);
+
+        // Get saved values
+        $values = $this->getValues($post->ID);
+
+        // Render fields
+        $this->renderFields($values);
+    }
+
+    /**
+     * Render metabox fields.
+     *
+     * @param array<string, mixed> $values
+     *
+     * @return void
+     */
+    protected function renderFields(array $values): void
+    {
+        // Add your field HTML here
+        ?>
+        <p>
+            <label for="{{prefix}}example_field">
+                <?php esc_html_e('Example Field', '{{textDomain}}'); ?>
+            </label>
+            <input
+                type="text"
+                id="{{prefix}}example_field"
+                name="{{prefix}}example_field"
+                value="<?php echo esc_attr($values['example_field'] ?? ''); ?>"
+                class="widefat"
+            />
+        </p>
+        <?php
+    }
+
+    /**
+     * Save metabox data.
+     *
+     * @param int $postId
+     *
+     * @return void
+     */
+    public function save(int $postId): void
+    {
+        // Verify nonce
+        if (!isset($_POST[$this->nonceName]) ||
+            !wp_verify_nonce($_POST[$this->nonceName], $this->nonceAction)) {
+            return;
+        }
+
+        // Check autosave
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        // Check permissions
+        if (!current_user_can('edit_post', $postId)) {
+            return;
+        }
+
+        // Save fields
+        $this->saveFields($postId);
+    }
+
+    /**
+     * Save field values.
+     *
+     * @param int $postId
+     *
+     * @return void
+     */
+    protected function saveFields(int $postId): void
+    {
+        // Sanitize and save your fields here
+        if (isset($_POST['{{prefix}}example_field'])) {
+            update_post_meta(
+                $postId,
+                '{{prefix}}example_field',
+                sanitize_text_field($_POST['{{prefix}}example_field'])
+            );
+        }
+    }
+
+    /**
+     * Get stored values.
+     *
+     * @param int $postId
+     *
+     * @return array<string, mixed>
+     */
+    protected function getValues(int $postId): array
+    {
+        return [
+            'example_field' => get_post_meta($postId, '{{prefix}}example_field', true),
+        ];
+    }
+
+    /**
+     * Boot the metabox (hook into WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+        add_action('add_meta_boxes', [$instance, 'register']);
+        add_action('save_post', [$instance, 'save']);
+    }
+}

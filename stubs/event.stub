@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Event.
+ *
+ * Domain event that can be dispatched and listened to.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Create a new event instance.
+     *
+     * @param mixed $data Event payload data
+     */
+    public function __construct(
+        public readonly mixed $data = null
+    ) {
+    }
+}

@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Scope.
+ *
+ * Reusable query scope for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Apply the scope to a query.
+     *
+     * @param mixed $query The query builder instance.
+     *
+     * @return mixed
+     */
+    public function apply(mixed $query): mixed
+    {
+        // Modify the query here
+        // Example: return $query . " AND status = 'active'";
+        return $query;
+    }
+
+    /**
+     * Apply the scope statically for convenience.
+     *
+     * @param mixed $query The query builder instance.
+     *
+     * @return mixed
+     */
+    public static function scope(mixed $query): mixed
+    {
+        return (new static())->apply($query);
+    }
+}

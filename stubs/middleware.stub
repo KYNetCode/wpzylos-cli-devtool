@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Http\Request;
+
+/**
+ * {{class}} Middleware.
+ *
+ * HTTP middleware for filtering requests.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param Request $request
+     * @param callable $next
+     *
+     * @return mixed
+     */
+    public function handle(Request $request, callable $next): mixed
+    {
+        // Perform pre-request actions here
+
+        $response = $next($request);
+
+        // Perform post-request actions here
+
+        return $response;
+    }
+}

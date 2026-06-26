@@ -1,0 +1,116 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Asset.
+ *
+ * Manages CSS/JS asset registration and enqueuing for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Asset handle prefix.
+     *
+     * @var string
+     */
+    protected string $prefix = '{{prefix}}';
+
+    /**
+     * Register all assets (scripts and styles).
+     *
+     * Called during 'wp_enqueue_scripts' or 'admin_enqueue_scripts'.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        $this->registerStyles();
+        $this->registerScripts();
+    }
+
+    /**
+     * Register stylesheets.
+     *
+     * @return void
+     */
+    protected function registerStyles(): void
+    {
+        wp_register_style(
+            $this->prefix . '{{slug}}',
+            $this->assetUrl('css/{{slug}}.css'),
+            [],
+            $this->version()
+        );
+    }
+
+    /**
+     * Register scripts.
+     *
+     * @return void
+     */
+    protected function registerScripts(): void
+    {
+        wp_register_script(
+            $this->prefix . '{{slug}}',
+            $this->assetUrl('js/{{slug}}.js'),
+            [],
+            $this->version(),
+            true
+        );
+    }
+
+    /**
+     * Enqueue all registered assets.
+     *
+     * @return void
+     */
+    public function enqueue(): void
+    {
+        wp_enqueue_style($this->prefix . '{{slug}}');
+        wp_enqueue_script($this->prefix . '{{slug}}');
+    }
+
+    /**
+     * Enqueue admin-only assets.
+     *
+     * @param string $hookSuffix The admin page hook suffix
+     *
+     * @return void
+     */
+    public function enqueueAdmin(string $hookSuffix): void
+    {
+        // Only load on specific admin pages if needed
+        // if ($hookSuffix !== 'toplevel_page_your-slug') { return; }
+
+        $this->enqueue();
+    }
+
+    /**
+     * Get the full URL to an asset file.
+     *
+     * @param string $path Relative path within resources/assets/
+     *
+     * @return string
+     */
+    protected function assetUrl(string $path): string
+    {
+        return plugin_dir_url(dirname(__DIR__)) . 'resources/assets/' . ltrim($path, '/');
+    }
+
+    /**
+     * Get the asset version for cache busting.
+     *
+     * @return string
+     */
+    protected function version(): string
+    {
+        return defined('WP_DEBUG') && WP_DEBUG
+            ? (string) time()
+            : '1.0.0';
+    }
+}

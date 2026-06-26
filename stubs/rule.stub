@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Rule.
+ *
+ * Custom validation rule for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Determine if the validation rule passes.
+     *
+     * @param string $attribute The attribute name being validated.
+     * @param mixed  $value     The attribute value.
+     *
+     * @return bool
+     */
+    public function passes(string $attribute, mixed $value): bool
+    {
+        // Implement validation logic here
+        return true;
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function message(): string
+    {
+        return __('The :attribute is invalid.', '{{textDomain}}');
+    }
+}

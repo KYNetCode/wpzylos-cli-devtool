@@ -1,0 +1,159 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Widget.
+ *
+ * WordPress widget for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}} extends \WP_Widget
+{
+    /**
+     * Widget ID.
+     *
+     * @var string
+     */
+    protected string $widgetId = '{{widgetId}}';
+
+    /**
+     * Widget name.
+     *
+     * @var string
+     */
+    protected string $widgetName = '{{widgetTitle}}';
+
+    /**
+     * Widget description.
+     *
+     * @var string
+     */
+    protected string $widgetDescription = '{{widgetDescription}}';
+
+    /**
+     * Default widget values.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $defaults = [
+        'title' => '',
+    ];
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct(
+            $this->widgetId,
+            $this->widgetName,
+            [
+                'description' => $this->widgetDescription,
+                'classname'   => $this->widgetId,
+            ]
+        );
+    }
+
+    /**
+     * Front-end display of widget.
+     *
+     * @param array<string, mixed> $args Widget arguments.
+     * @param array<string, mixed> $instance Saved values from database.
+     *
+     * @return void
+     */
+    public function widget($args, $instance): void
+    {
+        $instance = wp_parse_args($instance, $this->defaults);
+
+        echo $args['before_widget'];
+
+        if (!empty($instance['title'])) {
+            echo $args['before_title']
+                . apply_filters('widget_title', $instance['title'])
+                . $args['after_title'];
+        }
+
+        // Widget content
+        $this->renderContent($instance);
+
+        echo $args['after_widget'];
+    }
+
+    /**
+     * Render the widget content.
+     *
+     * @param array<string, mixed> $instance
+     *
+     * @return void
+     */
+    protected function renderContent(array $instance): void
+    {
+        ?>
+        <div class="{{widgetId}}-content">
+            <?php esc_html_e('Widget content goes here.', '{{textDomain}}'); ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Back-end widget form.
+     *
+     * @param array<string, mixed> $instance Previously saved values from database.
+     *
+     * @return void
+     */
+    public function form($instance): void
+    {
+        $instance = wp_parse_args($instance, $this->defaults);
+        ?>
+        <p>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
+                <?php esc_html_e('Title:', '{{textDomain}}'); ?>
+            </label>
+            <input
+                class="widefat"
+                id="<?php echo esc_attr($this->get_field_id('title')); ?>"
+                name="<?php echo esc_attr($this->get_field_name('title')); ?>"
+                type="text"
+                value="<?php echo esc_attr($instance['title']); ?>"
+            />
+        </p>
+        <?php
+    }
+
+    /**
+     * Sanitize widget form values as they are saved.
+     *
+     * @param array<string, mixed> $new_instance Values just sent to be saved.
+     * @param array<string, mixed> $old_instance Previously saved values from database.
+     *
+     * @return array<string, mixed> Updated safe values to be saved.
+     */
+    public function update($new_instance, $old_instance): array
+    {
+        $instance = [];
+
+        $instance['title'] = !empty($new_instance['title'])
+            ? sanitize_text_field($new_instance['title'])
+            : '';
+
+        return $instance;
+    }
+
+    /**
+     * Boot the widget (hook into WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        add_action('widgets_init', function () {
+            register_widget(static::class);
+        });
+    }
+}

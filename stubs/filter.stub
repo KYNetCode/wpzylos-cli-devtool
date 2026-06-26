@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Filter.
+ *
+ * WordPress filter hook handler for '{{hook}}'.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * The WordPress filter hook name.
+     *
+     * @var string
+     */
+    protected string $hook = '{{hook}}';
+
+    /**
+     * Hook priority.
+     *
+     * @var int
+     */
+    protected int $priority = {{priority}};
+
+    /**
+     * Number of accepted arguments.
+     *
+     * @var int
+     */
+    protected int $acceptedArgs = 1;
+
+    /**
+     * Handle the filter.
+     *
+     * @param mixed $value The value to filter.
+     * @param mixed ...$args Additional arguments passed by the hook.
+     *
+     * @return mixed The filtered value.
+     */
+    public function handle(mixed $value, mixed ...$args): mixed
+    {
+        // Modify and return the filtered value
+        return $value;
+    }
+
+    /**
+     * Boot the filter handler (register with WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+
+        add_filter(
+            $instance->hook,
+            [$instance, 'handle'],
+            $instance->priority,
+            $instance->acceptedArgs
+        );
+    }
+}

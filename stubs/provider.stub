@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Core\Contracts\ApplicationInterface;
+use WPZylos\Framework\Core\ServiceProvider;
+
+/**
+ * {{class}} Service Provider.
+ *
+ * Register bindings and services within the plugin container.
+ *
+ * @package {{namespace}}
+ */
+class {{class}} extends ServiceProvider
+{
+    /**
+     * Register bindings in the container.
+     *
+     * @param ApplicationInterface $app
+     *
+     * @return void
+     */
+    public function register(ApplicationInterface $app): void
+    {
+        parent::register($app);
+
+        // Register bindings here
+        // $this->singleton(ServiceInterface::class, fn() => new Service());
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * Called after all providers have been registered.
+     *
+     * @param ApplicationInterface $app
+     *
+     * @return void
+     */
+    public function boot(ApplicationInterface $app): void
+    {
+        // Bootstrap services here
+    }
+}

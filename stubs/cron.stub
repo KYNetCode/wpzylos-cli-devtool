@@ -1,0 +1,94 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Cron.
+ *
+ * WordPress scheduled task for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Cron hook name.
+     *
+     * @var string
+     */
+    protected string $hook = '{{prefix}}{{snake}}';
+
+    /**
+     * Recurrence interval.
+     *
+     * @var string One of: hourly, twicedaily, daily, weekly
+     */
+    protected string $recurrence = '{{recurrence}}';
+
+    /**
+     * Handle the cron event.
+     *
+     * @return void
+     */
+    public function handle(): void
+    {
+        // Implement your scheduled task logic here
+    }
+
+    /**
+     * Schedule the cron event.
+     *
+     * @return void
+     */
+    public function schedule(): void
+    {
+        if (!wp_next_scheduled($this->hook)) {
+            wp_schedule_event(time(), $this->recurrence, $this->hook);
+        }
+    }
+
+    /**
+     * Unschedule the cron event.
+     *
+     * @return void
+     */
+    public function unschedule(): void
+    {
+        $timestamp = wp_next_scheduled($this->hook);
+
+        if ($timestamp) {
+            wp_unschedule_event($timestamp, $this->hook);
+        }
+    }
+
+    /**
+     * Boot the cron handler (register with WordPress).
+     *
+     * Schedule on plugin activation, unschedule on deactivation.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+
+        // Register the handler
+        add_action($instance->hook, [$instance, 'handle']);
+
+        // Schedule on init if not already scheduled
+        add_action('init', [$instance, 'schedule']);
+    }
+
+    /**
+     * Clean up on plugin deactivation.
+     *
+     * @return void
+     */
+    public static function deactivate(): void
+    {
+        $instance = new static();
+        $instance->unschedule();
+    }
+}

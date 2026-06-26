@@ -1,0 +1,99 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Observer.
+ *
+ * Lifecycle observer for {{title}} model events.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Handle the "creating" event.
+     *
+     * Called before a record is created.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function creating(mixed $model): void
+    {
+        //
+    }
+
+    /**
+     * Handle the "created" event.
+     *
+     * Called after a record is created.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function created(mixed $model): void
+    {
+        //
+    }
+
+    /**
+     * Handle the "updating" event.
+     *
+     * Called before a record is updated.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function updating(mixed $model): void
+    {
+        //
+    }
+
+    /**
+     * Handle the "updated" event.
+     *
+     * Called after a record is updated.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function updated(mixed $model): void
+    {
+        //
+    }
+
+    /**
+     * Handle the "deleting" event.
+     *
+     * Called before a record is deleted.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function deleting(mixed $model): void
+    {
+        //
+    }
+
+    /**
+     * Handle the "deleted" event.
+     *
+     * Called after a record is deleted.
+     *
+     * @param mixed $model
+     *
+     * @return void
+     */
+    public function deleted(mixed $model): void
+    {
+        //
+    }
+}

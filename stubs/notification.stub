@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Notification\Notification;
+use WPZylos\Framework\Notification\Messages\MailMessage;
+use WPZylos\Framework\Notification\Messages\AdminNoticeMessage;
+
+/**
+ * {{class}} Notification.
+ *
+ * @package {{namespace}}
+ */
+class {{class}} extends Notification
+{
+    /**
+     * Create a new notification instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Get the notification channels.
+     *
+     * @return string[]
+     */
+    public function via(): array
+    {
+        return ['mail', 'database'];
+    }
+
+    /**
+     * Get the mail representation.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage())
+            ->subject('{{title}}')
+            ->greeting('Hello!')
+            ->line('This is your notification content.')
+            ->action('View Details', home_url());
+    }
+
+    /**
+     * Get the database representation.
+     *
+     * @return array<string, mixed>
+     */
+    public function toDatabase(object $notifiable): array
+    {
+        return [
+            'message' => '{{title}}',
+        ];
+    }
+}

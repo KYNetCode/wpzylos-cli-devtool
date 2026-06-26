@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Resource.
+ *
+ * API resource transformer for {{title}}.
+ * Transforms model data into a consistent JSON-serializable format.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * The resource data.
+     *
+     * @var mixed
+     */
+    protected mixed $resource;
+
+    /**
+     * Create a new resource instance.
+     *
+     * @param mixed $resource The model or data to transform.
+     */
+    public function __construct(mixed $resource)
+    {
+        $this->resource = $resource;
+    }
+
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        if (is_array($this->resource)) {
+            return [
+                'id' => $this->resource['id'] ?? null,
+                // Map additional fields here
+            ];
+        }
+
+        return [
+            'id' => $this->resource->id ?? null,
+            // Map additional fields here
+        ];
+    }
+
+    /**
+     * Transform the resource to JSON.
+     *
+     * @param int $options JSON encode options.
+     *
+     * @return string
+     */
+    public function toJson(int $options = 0): string
+    {
+        return (string) json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * Create a collection of resources.
+     *
+     * @param iterable<mixed> $items
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function collection(iterable $items): array
+    {
+        $result = [];
+
+        foreach ($items as $item) {
+            $result[] = (new static($item))->toArray();
+        }
+
+        return $result;
+    }
+}

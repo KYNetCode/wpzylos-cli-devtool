@@ -1,0 +1,91 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Columns.
+ *
+ * Custom admin list table columns for {{postType}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Post type to add columns to.
+     *
+     * @var string
+     */
+    protected string $postType = '{{postType}}';
+
+    /**
+     * Register custom columns.
+     *
+     * @param array<string, string> $columns Existing columns.
+     *
+     * @return array<string, string>
+     */
+    public function register(array $columns): array
+    {
+        // Insert custom columns before the 'date' column
+        $date = $columns['date'] ?? null;
+        unset($columns['date']);
+
+        $columns['{{prefix}}example'] = __('Example', '{{textDomain}}');
+
+        if ($date !== null) {
+            $columns['date'] = $date;
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Render column content.
+     *
+     * @param string $column  Column name.
+     * @param int    $postId  Post ID.
+     *
+     * @return void
+     */
+    public function render(string $column, int $postId): void
+    {
+        switch ($column) {
+            case '{{prefix}}example':
+                $value = get_post_meta($postId, '{{prefix}}example', true);
+                echo esc_html($value ?: '—');
+                break;
+        }
+    }
+
+    /**
+     * Register sortable columns.
+     *
+     * @param array<string, string> $columns Sortable columns.
+     *
+     * @return array<string, string>
+     */
+    public function sortable(array $columns): array
+    {
+        $columns['{{prefix}}example'] = '{{prefix}}example';
+
+        return $columns;
+    }
+
+    /**
+     * Boot the columns handler (hook into WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+        $postType = $instance->postType;
+
+        add_filter("manage_{$postType}_posts_columns", [$instance, 'register']);
+        add_action("manage_{$postType}_posts_custom_column", [$instance, 'render'], 10, 2);
+        add_filter("manage_edit-{$postType}_sortable_columns", [$instance, 'sortable']);
+    }
+}

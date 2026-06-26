@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * {{class}} Test.
+ *
+ * @package {{namespace}}
+ */
+class {{class}} extends TestCase
+{
+    /**
+     * Set up the test environment.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    /**
+     * Tear down the test environment.
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testExample(): void
+    {
+        $this->assertTrue(true);
+    }
+}

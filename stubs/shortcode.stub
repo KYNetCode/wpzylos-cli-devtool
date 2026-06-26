@@ -1,0 +1,201 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Assets\ViteAssetResolver;
+use WPZylos\Framework\Core\Contracts\ApplicationInterface;
+use WPZylos\Framework\Core\Contracts\ContextInterface;
+use WPZylos\Framework\Hooks\HookManager;
+
+/**
+ * {{class}} Shortcode.
+ *
+ * WPZylos shortcode handler for [{{tag}}], with native Gutenberg,
+ * Elementor, and WPBakery discovery.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    protected string $tag = '{{tag}}';
+    protected string $blockName = '{{blockName}}';
+    protected string $title = '{{shortcodeTitle}}';
+    protected string $description = '{{shortcodeDescription}}';
+    protected string $category = '{{shortcodeCategory}}';
+    protected string $icon = '{{shortcodeIcon}}';
+    protected string $viteEntry = '{{viteEntry}}';
+
+    /** @var array<string, mixed> */
+    protected array $defaults = [
+        // Add shortcode attributes here.
+    ];
+
+    public function __construct(
+        protected ApplicationInterface $app,
+        protected ContextInterface $context,
+        protected HookManager $hooks,
+        protected ViteAssetResolver $vite
+    ) {
+    }
+
+    /** Register the shortcode and its dynamic Gutenberg block. */
+    public function register(): void
+    {
+        add_shortcode($this->tag, [$this, 'render']);
+        $this->registerBlock();
+    }
+
+    /**
+     * Render the shortcode output.
+     *
+     * @param array<string, mixed>|string $atts Shortcode attributes.
+     */
+    public function render(array|string $atts = [], ?string $content = null): string
+    {
+        $atts = shortcode_atts($this->defaults, (array) $atts, $this->tag);
+        $this->vite->enqueueEntry($this->viteEntry, $this->context->assetHandle($this->tag));
+
+        ob_start();
+        ?>
+        <div class="{{cssPrefix}}shortcode {{cssPrefix}}shortcode--{{tag}}">
+            <?php echo esc_html($content ?? ''); ?>
+        </div>
+        <?php
+        return (string) ob_get_clean();
+    }
+
+    /** Render the dynamic Gutenberg block through the shortcode renderer. */
+    public function renderBlock(array $attributes = [], string $content = ''): string
+    {
+        return $this->render($attributes, $content);
+    }
+
+    /** Register the dynamic Gutenberg block and its server-rendered editor preview. */
+    protected function registerBlock(): void
+    {
+        if (!function_exists('register_block_type')) {
+            return;
+        }
+
+        $handle = $this->context->assetHandle($this->tag . '-block-editor');
+        wp_register_script(
+            $handle,
+            false,
+            ['wp-blocks', 'wp-element', 'wp-i18n', 'wp-server-side-render'],
+            null,
+            true
+        );
+
+        $metadata = wp_json_encode([
+            'name' => $this->blockName,
+            'title' => $this->title,
+            'description' => $this->description,
+            'category' => $this->category,
+            'icon' => $this->icon,
+        ]);
+
+        wp_add_inline_script(
+            $handle,
+            "(function(wp,m){wp.blocks.registerBlockType(m.name,{apiVersion:2,title:m.title,description:m.description,category:m.category,icon:m.icon,edit:function(p){return wp.element.createElement(wp.serverSideRender,{block:m.name,attributes:p.attributes});},save:function(){return null;}});})(window.wp,{$metadata});"
+        );
+
+        register_block_type($this->blockName, [
+            'api_version' => '2',
+            'editor_script' => $handle,
+            'render_callback' => [$this, 'renderBlock'],
+        ]);
+    }
+
+    /** Register a native WPBakery element when WPBakery is active. */
+    public function registerWpBakery(): void
+    {
+        if (!function_exists('vc_map')) {
+            return;
+        }
+
+        vc_map([
+            'name' => $this->title,
+            'description' => $this->description,
+            'base' => $this->tag,
+            'category' => $this->category,
+            'params' => [],
+        ]);
+    }
+
+    /** Register a native Elementor widget when Elementor is active. */
+    public function registerElementor(object $widgetsManager): void
+    {
+        if (!class_exists('\\Elementor\\Widget_Base') || !method_exists($widgetsManager, 'register')) {
+            return;
+        }
+
+        $widget = new class extends \Elementor\Widget_Base {
+            private {{class}} $shortcode;
+
+            public function setShortcode({{class}} $shortcode): void
+            {
+                $this->shortcode = $shortcode;
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+            public function get_name(): string
+            {
+                return $this->shortcode->getTag();
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+            public function get_title(): string
+            {
+                return $this->shortcode->getTitle();
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+            public function get_icon(): string
+            {
+                return 'eicon-shortcode';
+            }
+
+            // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+            public function get_categories(): array
+            {
+                return ['general'];
+            }
+
+            protected function render(): void
+            {
+                echo $this->shortcode->render();
+            }
+        };
+        $widget->setShortcode($this);
+        $widgetsManager->register($widget);
+    }
+
+    public function getTag(): string
+    {
+        return $this->tag;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /** Boot through the WPZylos application and package services. */
+    public static function boot(ApplicationInterface $app): self
+    {
+        $instance = new self(
+            $app,
+            $app->context(),
+            $app->make(HookManager::class),
+            $app->make(ViteAssetResolver::class)
+        );
+
+        $instance->hooks->wpAction('init', [$instance, 'register'], 10, 0);
+        $instance->hooks->wpAction('vc_before_init', [$instance, 'registerWpBakery'], 10, 0);
+        $instance->hooks->wpAction('elementor/widgets/register', [$instance, 'registerElementor']);
+
+        return $instance;
+    }
+}

@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use {{eventNamespace}};
+
+/**
+ * {{class}} Listener.
+ *
+ * Handles {{event}} events.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Handle the event.
+     *
+     * @param {{event}} $event
+     *
+     * @return void
+     */
+    public function handle({{event}} $event): void
+    {
+        // Handle the event
+    }
+}

@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * WPZylos CLI Tool
+ *
+ * Project root executable - forwards to vendor package.
+ *
+ * @see https://wpzylos.com/docs/latest/packages/wpzylos-cli-devtool
+ */
+
+$vendorBin = __DIR__ . '/vendor/bin/wpzylos';
+
+if (!file_exists($vendorBin)) {
+    fwrite(STDERR, "WPZylos CLI not found. Run: composer require --dev KYNetCode/wpzylos-cli-devtool\n");
+    exit(1);
+}
+
+// Pass all arguments to the vendor binary
+$args = array_slice($argv, 1);
+$command = PHP_BINARY . ' ' . escapeshellarg($vendorBin) . ' ' . implode(' ', array_map('escapeshellarg', $args));
+
+// Execute and pass through exit code
+passthru($command, $exitCode);
+exit($exitCode);

@@ -1,0 +1,90 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Block.
+ *
+ * Gutenberg block registration for {{blockNamespace}}/{{blockSlug}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Block namespace.
+     *
+     * @var string
+     */
+    protected string $namespace = '{{blockNamespace}}';
+
+    /**
+     * Block name (without namespace).
+     *
+     * @var string
+     */
+    protected string $name = '{{blockSlug}}';
+
+    /**
+     * Get the full block type name.
+     *
+     * @return string
+     */
+    public function getBlockType(): string
+    {
+        return $this->namespace . '/' . $this->name;
+    }
+
+    /**
+     * Register the block type.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        register_block_type(
+            $this->getBlockPath(),
+            [
+                'render_callback' => [$this, 'render'],
+            ]
+        );
+    }
+
+    /**
+     * Get the path to the block's directory (containing block.json).
+     *
+     * @return string
+     */
+    protected function getBlockPath(): string
+    {
+        return dirname(__DIR__, 2) . '/blocks/{{blockSlug}}';
+    }
+
+    /**
+     * Server-side render callback.
+     *
+     * @param array<string, mixed> $attributes Block attributes.
+     * @param string               $content    Block inner content.
+     *
+     * @return string
+     */
+    public function render(array $attributes, string $content): string
+    {
+        ob_start();
+        include $this->getBlockPath() . '/render.php';
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * Boot the block (hook into WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+        add_action('init', [$instance, 'register']);
+    }
+}

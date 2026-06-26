@@ -1,0 +1,170 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * WPZylos CLI Tool
+ *
+ * Scaffolds plugins and generates files outside WP runtime.
+ */
+
+// Find autoloader
+$autoLoaders = [
+    // When installed as a dependency (via vendor/bin)
+        dirname( __DIR__, 3 ) . '/autoload.php',
+    // Local development
+        dirname( __DIR__ ) . '/vendor/autoload.php',
+];
+
+$autoloaderFound = false;
+foreach ( $autoLoaders as $autoloader ) {
+    if ( file_exists( $autoloader ) ) {
+        require $autoloader;
+        $autoloaderFound = true;
+        break;
+    }
+}
+
+if ( ! $autoloaderFound ) {
+    fwrite( STDERR, "Autoloader not found. Run: composer install\n" );
+    exit( 1 );
+}
+
+use WPZylos\Framework\Cli\DevTool\Application;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeActionCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeAjaxCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeAssetCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeBlockCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeCastCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeColumnsCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeCommandCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeConfigCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeControllerCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeCronCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeEnumCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeEventCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeExceptionCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeFactoryCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeFilterCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeInterfaceCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeJobCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeListenerCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeMailCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeMenuCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeMetaboxCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeMiddlewareCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeMigrationCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeModelCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeNotificationCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeObserverCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakePolicyCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakePostTypeCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeProviderCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeRequestCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeResourceCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeRestCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeRuleCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeScheduleCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeScopeCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeSeederCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeServiceCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeSettingsCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeShortcodeCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeSubscriberCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeTaxonomyCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeTestCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeTraitCommand;
+use WPZylos\Framework\Cli\DevTool\Commands\MakeWidgetCommand;
+
+// ─── Foundation Commands ─────────────────────────────────────────────────────
+
+// ─── Console Commands ────────────────────────────────────────────────────────
+
+// ─── HTTP Commands ───────────────────────────────────────────────────────────
+
+// ─── Database Commands ───────────────────────────────────────────────────────
+
+// ─── Event Commands ──────────────────────────────────────────────────────────
+
+// ─── Mail & Notification Commands ────────────────────────────────────────────
+
+// ─── Validation & Authorization Commands ────────────────────────────────────
+
+// ─── Testing Command ─────────────────────────────────────────────────────────
+
+// ─── Configuration Command ──────────────────────────────────────────────────
+
+// ─── WordPress Commands ─────────────────────────────────────────────────────
+
+// ─── Assets ──────────────────────────────────────────────────────────────────
+
+$application = new Application();
+
+$application->addCommands( [
+    // ─── Foundation ──────────────────────────────────────────────────────────
+        new MakeProviderCommand(),
+        new MakeJobCommand(),
+        new MakeServiceCommand(),
+        new MakeTraitCommand(),
+        new MakeEnumCommand(),
+        new MakeExceptionCommand(),
+        new MakeInterfaceCommand(),
+
+    // ─── Console ─────────────────────────────────────────────────────────────
+        new MakeCommandCommand(),
+        new MakeCronCommand(),
+        new MakeScheduleCommand(),
+
+    // ─── HTTP ────────────────────────────────────────────────────────────────
+        new MakeControllerCommand(),
+        new MakeMiddlewareCommand(),
+        new MakeRequestCommand(),
+        new MakeRestCommand(),
+        new MakeAjaxCommand(),
+        new MakeResourceCommand(),
+
+    // ─── Database & Models ───────────────────────────────────────────────────
+        new MakeMigrationCommand(),
+        new MakeModelCommand(),
+        new MakeSeederCommand(),
+        new MakeFactoryCommand(),
+        new MakeObserverCommand(),
+        new MakeScopeCommand(),
+        new MakeCastCommand(),
+
+    // ─── Events ──────────────────────────────────────────────────────────────
+        new MakeEventCommand(),
+        new MakeListenerCommand(),
+        new MakeSubscriberCommand(),
+
+    // ─── Mail & Notifications ────────────────────────────────────────────────
+        new MakeMailCommand(),
+        new MakeNotificationCommand(),
+
+    // ─── Validation & Authorization ──────────────────────────────────────────
+        new MakeRuleCommand(),
+        new MakePolicyCommand(),
+
+    // ─── Testing ─────────────────────────────────────────────────────────────
+        new MakeTestCommand(),
+
+    // ─── Configuration ───────────────────────────────────────────────────────
+        new MakeConfigCommand(),
+
+    // ─── WordPress ───────────────────────────────────────────────────────────
+        new MakePostTypeCommand(),
+        new MakeTaxonomyCommand(),
+        new MakeMetaboxCommand(),
+        new MakeMenuCommand(),
+        new MakeSettingsCommand(),
+        new MakeWidgetCommand(),
+        new MakeShortcodeCommand(),
+        new MakeBlockCommand(),
+        new MakeColumnsCommand(),
+        new MakeActionCommand(),
+        new MakeFilterCommand(),
+
+    // ─── Assets ──────────────────────────────────────────────────────────────
+        new MakeAssetCommand(),
+] );
+
+$application->run();

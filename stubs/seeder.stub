@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Seeder.
+ *
+ * Seed the database with test or default data.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Run the database seeder.
+     *
+     * @return void
+     */
+    public function run(): void
+    {
+        // Add seeding logic here
+    }
+}

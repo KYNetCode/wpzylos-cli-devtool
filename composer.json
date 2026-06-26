@@ -1,0 +1,81 @@
+{
+  "name": "kynetcode/wpzylos-cli-devtool",
+  "description": "Development CLI tool for scaffolding WPZylos plugins with generators for controllers, requests, migrations, and more",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "wordpress",
+    "wpzylos",
+    "cli",
+    "scaffolding",
+    "generators",
+    "make-command",
+    "code-generation",
+    "development-tool"
+  ],
+  "homepage": "https://github.com/KYNetCode/wpzylos-cli-devtool",
+  "authors": [
+    {
+      "name": "KYNetCode",
+      "email": "diggerwp@gmail.com",
+      "homepage": "https://github.com/KYNetCode",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/KYNetCode/wpzylos-cli-devtool/issues",
+    "source": "https://github.com/KYNetCode/wpzylos-cli-devtool",
+    "docs": "https://wpzylos.com/docs/latest/packages/wpzylos-cli-devtool"
+  },
+  "require": {
+      "php": "^8.0",
+    "symfony/console": "^6.0 || ^7.0",
+    "kynetcode/wpzylos-cli-core": "^1.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^9.6 || ^10.0",
+    "squizlabs/php_codesniffer": "^3.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPZylos\\Framework\\Cli\\DevTool\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WPZylos\\Framework\\Cli\\DevTool\\Tests\\": "tests/"
+    }
+  },
+  "bin": [
+    "bin/wpzylos",
+    "bin/wpzylos-install"
+  ],
+  "scripts": {
+    "post-install-cmd": [
+      "WPZylos\\Framework\\Cli\\DevTool\\Installer::postInstall"
+    ],
+    "post-update-cmd": [
+      "WPZylos\\Framework\\Cli\\DevTool\\Installer::postUpdate"
+    ],
+    "test": "phpunit",
+    "analyze": "phpstan analyze",
+    "cs": "phpcs --standard=PSR12 src",
+    "cs-fix": "phpcbf --standard=PSR12 src",
+    "qa": ["@cs", "@analyze", "@test"]
+  },
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "8.0.2"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://www.paypal.com/donate/?hosted_button_id=66U4L3HG4TLCC"
+    }
+  ]
+}

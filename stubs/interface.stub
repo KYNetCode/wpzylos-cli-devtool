@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Interface.
+ *
+ * Contract for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+interface {{class}}
+{
+    //
+}

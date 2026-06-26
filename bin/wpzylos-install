@@ -1,0 +1,86 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * WPZylos CLI Installer
+ *
+ * Creates the root-level wpzylos executable in your project.
+ * Run this once after installing the package:
+ *
+ *   vendor/bin/wpzylos-install
+ */
+
+// Find the project root (where vendor directory is)
+$vendorDir = dirname(__DIR__, 3); // Go up from vendor/KYNetCode/wpzylos-cli-devtool/bin
+$projectRoot = dirname($vendorDir);
+
+// Verify we're in the right place
+if (!is_dir($vendorDir) || basename($vendorDir) !== 'vendor') {
+    // Try alternative path (when running from package root for testing)
+    $projectRoot = getcwd();
+    $vendorDir = $projectRoot . DIRECTORY_SEPARATOR . 'vendor';
+
+    if (!is_dir($vendorDir)) {
+        fwrite(STDERR, "Error: Could not locate vendor directory.\n");
+        fwrite(STDERR, "Run this from your project root: vendor/bin/wpzylos-install\n");
+        exit(1);
+    }
+}
+
+$targetPath = $projectRoot . DIRECTORY_SEPARATOR . 'wpzylos';
+
+// Check if already exists
+if (file_exists($targetPath)) {
+    echo "wpzylos: Root executable already exists at: $targetPath\n";
+    echo "To recreate, delete the file first and run again.\n";
+    exit(0);
+}
+
+// Create the executable content
+$content = <<<'PHP'
+#!/usr/bin/env php
+<?php
+
+/**
+ * WPZylos CLI Tool
+ *
+ * Project root executable - forwards to vendor package.
+ *
+ * @see https://wpzylos.com/docs/latest/packages/wpzylos-cli-devtool
+ */
+
+$vendorBin = __DIR__ . '/vendor/bin/wpzylos';
+
+if (!file_exists($vendorBin)) {
+    fwrite(STDERR, "WPZylos CLI not found. Run: composer require --dev KYNetCode/wpzylos-cli-devtool\n");
+    exit(1);
+}
+
+// Pass all arguments to the vendor binary
+$args = array_slice($argv, 1);
+$command = PHP_BINARY . ' ' . escapeshellarg($vendorBin) . ' ' . implode(' ', array_map('escapeshellarg', $args));
+
+// Execute and pass through exit code
+passthru($command, $exitCode);
+exit($exitCode);
+
+PHP;
+
+// Write the file
+if (file_put_contents($targetPath, $content) === false) {
+    fwrite(STDERR, "Error: Failed to create wpzylos executable.\n");
+    exit(1);
+}
+
+// Make executable on Unix systems
+if (DIRECTORY_SEPARATOR !== '\\') {
+    chmod($targetPath, 0755);
+}
+
+echo "✓ Created wpzylos executable at: $targetPath\n";
+echo "\nUsage:\n";
+echo "  php wpzylos [command]\n";
+echo "\nExamples:\n";
+echo "  php wpzylos make:controller MyController\n";
+echo "  php wpzylos make:migration CreateUsersTable\n";
+echo "  php wpzylos list\n";

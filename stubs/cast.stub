@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Cast.
+ *
+ * Custom attribute cast for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Cast the given value from the database.
+     *
+     * @param mixed  $value  The raw database value.
+     * @param string $key    The attribute key.
+     *
+     * @return mixed The cast value.
+     */
+    public function get(mixed $value, string $key = ''): mixed
+    {
+        // Transform the value when reading from DB
+        return $value;
+    }
+
+    /**
+     * Prepare the given value for storage.
+     *
+     * @param mixed  $value  The application value.
+     * @param string $key    The attribute key.
+     *
+     * @return mixed The value to store in DB.
+     */
+    public function set(mixed $value, string $key = ''): mixed
+    {
+        // Transform the value when writing to DB
+        return $value;
+    }
+}

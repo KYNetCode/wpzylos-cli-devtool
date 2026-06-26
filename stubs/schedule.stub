@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Scheduler\Schedule;
+
+/**
+ * {{class}} Schedule.
+ *
+ * Define scheduled tasks for {{title}}.
+ * Register this in your SchedulerServiceProvider.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Define the scheduled tasks.
+     *
+     * @param Schedule $schedule The scheduler instance
+     *
+     * @return void
+     */
+    public function __invoke(Schedule $schedule): void
+    {
+        $schedule->call([$this, 'handle'])
+            ->name('{{prefix}}{{snake}}')
+            ->daily();
+    }
+
+    /**
+     * Handle the scheduled task.
+     *
+     * @return void
+     */
+    public function handle(): void
+    {
+        // Implement your scheduled task logic here
+    }
+}

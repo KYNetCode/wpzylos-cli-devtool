@@ -1,0 +1,87 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Factory.
+ *
+ * Model factory for generating test data for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * The model class this factory creates.
+     *
+     * @var string
+     */
+    protected string $model = '{{modelClass}}';
+
+    /**
+     * Define the default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            // 'name' => 'Example ' . wp_rand(1, 9999),
+            // 'email' => 'user' . wp_rand(1, 9999) . '@example.com',
+            // 'status' => 'active',
+            'created_at' => current_time('mysql'),
+        ];
+    }
+
+    /**
+     * Create a single model instance.
+     *
+     * @param array<string, mixed> $attributes Override attributes.
+     *
+     * @return array<string, mixed>
+     */
+    public function make(array $attributes = []): array
+    {
+        return array_merge($this->definition(), $attributes);
+    }
+
+    /**
+     * Create multiple model instances.
+     *
+     * @param int                  $count      Number of instances.
+     * @param array<string, mixed> $attributes Override attributes.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function makeMany(int $count, array $attributes = []): array
+    {
+        $items = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            $items[] = $this->make($attributes);
+        }
+
+        return $items;
+    }
+
+    /**
+     * Create a model instance and persist to DB.
+     *
+     * @param array<string, mixed> $attributes Override attributes.
+     *
+     * @return mixed
+     */
+    public function create(array $attributes = []): mixed
+    {
+        $data = $this->make($attributes);
+
+        // Implement database insertion here
+        // Example: global $wpdb;
+        // $wpdb->insert($this->table, $data);
+        // return $wpdb->insert_id;
+
+        return $data;
+    }
+}

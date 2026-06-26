@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * {{title}} Configuration.
+ *
+ * @package {{rootNamespace}}
+ */
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | {{title}}
+    |--------------------------------------------------------------------------
+    |
+    | Configure your {{title}} settings here.
+    |
+    */
+
+    'enabled' => true,
+
+    // Add your configuration values here
+
+];

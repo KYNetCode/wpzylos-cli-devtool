@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use WPZylos\Framework\Queue\Job;
+
+/**
+ * {{class}} Job.
+ *
+ * Queued job for background processing.
+ *
+ * @package {{namespace}}
+ */
+class {{class}} extends Job
+{
+    /**
+     * The number of times the job may be attempted.
+     */
+    protected int $tries = 3;
+
+    /**
+     * Create a new job instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        // Job logic here
+    }
+}

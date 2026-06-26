@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Policy.
+ *
+ * Authorization policy for {{title}}.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * Determine if the user can view any items.
+     *
+     * @param mixed $user
+     *
+     * @return bool
+     */
+    public function viewAny(mixed $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine if the user can view the item.
+     *
+     * @param mixed $user
+     * @param mixed $model
+     *
+     * @return bool
+     */
+    public function view(mixed $user, mixed $model): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine if the user can create items.
+     *
+     * @param mixed $user
+     *
+     * @return bool
+     */
+    public function create(mixed $user): bool
+    {
+        return current_user_can('manage_options');
+    }
+
+    /**
+     * Determine if the user can update the item.
+     *
+     * @param mixed $user
+     * @param mixed $model
+     *
+     * @return bool
+     */
+    public function update(mixed $user, mixed $model): bool
+    {
+        return current_user_can('manage_options');
+    }
+
+    /**
+     * Determine if the user can delete the item.
+     *
+     * @param mixed $user
+     * @param mixed $model
+     *
+     * @return bool
+     */
+    public function delete(mixed $user, mixed $model): bool
+    {
+        return current_user_can('manage_options');
+    }
+}

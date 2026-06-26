@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * {{class}} Action.
+ *
+ * WordPress action hook handler for '{{hook}}'.
+ *
+ * @package {{namespace}}
+ */
+class {{class}}
+{
+    /**
+     * The WordPress action hook name.
+     *
+     * @var string
+     */
+    protected string $hook = '{{hook}}';
+
+    /**
+     * Hook priority.
+     *
+     * @var int
+     */
+    protected int $priority = {{priority}};
+
+    /**
+     * Number of accepted arguments.
+     *
+     * @var int
+     */
+    protected int $acceptedArgs = 1;
+
+    /**
+     * Handle the action.
+     *
+     * @param mixed ...$args Arguments passed by the hook.
+     *
+     * @return void
+     */
+    public function handle(mixed ...$args): void
+    {
+        // Implement your action logic here
+    }
+
+    /**
+     * Boot the action handler (register with WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+
+        add_action(
+            $instance->hook,
+            [$instance, 'handle'],
+            $instance->priority,
+            $instance->acceptedArgs
+        );
+    }
+}
