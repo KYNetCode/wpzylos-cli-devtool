@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace {{namespace}};
 
-use WPZylos\Framework\Assets\ViteAssetResolver;
-use WPZylos\Framework\Core\Contracts\ApplicationInterface;
-use WPZylos\Framework\Hooks\HookManager;
-
 /**
  * {{class}} Menu.
  *
@@ -17,145 +13,90 @@ use WPZylos\Framework\Hooks\HookManager;
  */
 class {{class}}
 {
-    protected ApplicationInterface $app;
-    protected HookManager $hooks;
+    /**
+     * Menu slug.
+     *
+     * @var string
+     */
     protected string $slug = '{{menuSlug}}';
+
+    /**
+     * Page title.
+     *
+     * @var string
+     */
+    protected string $pageTitle = '{{pageTitle}}';
+
+    /**
+     * Menu title.
+     *
+     * @var string
+     */
+    protected string $menuTitle = '{{menuTitle}}';
+
+    /**
+     * Required capability.
+     *
+     * @var string
+     */
     protected string $capability = '{{capability}}';
+
+    /**
+     * Menu icon.
+     *
+     * @var string
+     */
     protected string $icon = '{{icon}}';
-    protected string $iconType = '{{iconType}}';
+
+    /**
+     * Menu position.
+     *
+     * @var int|null
+     */
     protected ?int $position = {{position}};
-    protected string $viteEntry = '{{viteEntry}}';
-    protected string $assetHandle = '{{assetHandle}}';
-    protected string $mountId = '{{mountId}}';
 
-    public function __construct(ApplicationInterface $app)
-    {
-        $this->app = $app;
-        $this->hooks = $app->make(HookManager::class);
-    }
-
-    public static function boot(ApplicationInterface $app): self
-    {
-        $instance = new self($app);
-
-        add_action('admin_menu', [$instance, 'register'], 10, 0);
-
-        return $instance;
-    }
-
+    /**
+     * Register the menu page.
+     *
+     * @return void
+     */
     public function register(): void
     {
         add_menu_page(
-            $this->getPageTitle(),
-            $this->getMenuTitle(),
+            $this->pageTitle,
+            $this->menuTitle,
             $this->capability,
             $this->slug,
             [$this, 'render'],
-            $this->getIcon(),
+            $this->icon,
             $this->position
         );
-
-        $this->hooks->wpAction('admin_enqueue_scripts', [$this, 'enqueueAssets']);
     }
 
-    protected function getPageTitle(): string
-    {
-        return esc_html__('{{pageTitle}}', '{{textDomain}}');
-    }
-
-    protected function getMenuTitle(): string
-    {
-        return esc_html__('{{menuTitle}}', '{{textDomain}}');
-    }
-
-    protected function getIcon(): string
-    {
-        $icon = trim($this->icon);
-        $type = strtolower(trim($this->iconType));
-
-        if ($icon === '') {
-            return 'dashicons-admin-generic';
-        }
-
-        if ($type === 'none' || $icon === 'none') {
-            return 'none';
-        }
-
-        if ($type === 'asset') {
-            return $this->getPluginAssetUrl($icon);
-        }
-
-        if (
-            $type === 'dashicon'
-            || $type === 'url'
-            || $type === 'data'
-            || $this->isDashicon($icon)
-            || $this->isUrl($icon)
-            || $this->isDataImage($icon)
-        ) {
-            return $icon;
-        }
-
-        return $this->getPluginAssetUrl($icon);
-    }
-
-    protected function getPluginAssetUrl(string $path): string
-    {
-        return $this->app->context()->url($this->normalizeAssetPath($path));
-    }
-
-    protected function normalizeAssetPath(string $path): string
-    {
-        $path = str_replace('\\', '/', trim($path));
-
-        if (str_starts_with($path, '@')) {
-            return $path;
-        }
-
-        return ltrim($path, '/');
-    }
-
-    protected function isDashicon(string $icon): bool
-    {
-        return str_starts_with($icon, 'dashicons-');
-    }
-
-    protected function isUrl(string $icon): bool
-    {
-        return 1 === preg_match('#^(https?:)?//#i', $icon);
-    }
-
-    protected function isDataImage(string $icon): bool
-    {
-        return 1 === preg_match('#^data:image/[a-z0-9.+-]+;base64,#i', $icon);
-    }
-
-    public function enqueueAssets(string $hook): void
-    {
-        if (! str_contains($hook, $this->slug) || $this->viteEntry === '') {
-            return;
-        }
-
-        if (! class_exists(ViteAssetResolver::class)) {
-            return;
-        }
-
-        try {
-            /** @var ViteAssetResolver $vite */
-            $vite = $this->app->make(ViteAssetResolver::class);
-            $vite->enqueueEntry($this->viteEntry, $this->assetHandle);
-        } catch (\Throwable) {
-            return;
-        }
-    }
-
+    /**
+     * Render the menu page.
+     *
+     * @return void
+     */
     public function render(): void
     {
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html($this->getPageTitle()); ?></h1>
-            <div id="<?php echo esc_attr($this->mountId); ?>"></div>
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+
+            <p><?php esc_html_e('{{title}} page content goes here.', '{{textDomain}}'); ?></p>
         </div>
         <?php
+    }
+
+    /**
+     * Boot the menu (hook into WordPress).
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $instance = new static();
+        add_action('admin_menu', [$instance, 'register']);
     }
 }
